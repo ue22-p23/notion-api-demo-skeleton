@@ -20,20 +20,13 @@ Pour la structure de base de donnée, il vous suffit de dupliquer la [mienne](ht
 
 ## Installation
 
-Clonez le dépôt de l'application sur votre machine locale :
-
-```
-git clone https://exempledepot.com/votreapplication.git
-cd votreapplication
-```
-
 Installez les dépendances nécessaires :
 
 ```
 pip install -r requirements.txt
 ```
 
-Les dépendances incluent requests, prompt_toolkit, markdown, et rich.
+Les dépendances incluent `requests`, `prompt_toolkit`, `markdown`, et `rich`.
 
 ## Configuration
 
