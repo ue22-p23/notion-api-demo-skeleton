@@ -51,7 +51,10 @@ def main():
             user_input = sys.argv[1]
             sys.argv[1:2] = []
         else:
-            user_input = prompt("Action: ", completer=task_completer)
+            try:
+                user_input = prompt("Action: ", completer=task_completer)
+            except (EOFError, KeyboardInterrupt):
+                break
         if user_input == "list":
             list_tasks(global_task_ids)
             task_id_completer = WordCompleter(global_task_ids)
