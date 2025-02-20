@@ -33,8 +33,10 @@ Les dépendances incluent `requests`, `prompt_toolkit`, `markdown`, et `rich`.
 Créez un fichier .env dans le répertoire racine de l'application et ajoutez-y votre token d'accès de l'API Notion et l'ID de votre base de données :
 
 ```
+# à trouver dans la page de votre intégration API
 NOTION_TOKEN=votre_token_d'API
-DATABASE_ID=votre_id_de_base_de_données
+# à trouver dans l'URL de votre base de données Notion
+NOTION_DATABASE_ID=votre_id_de_base_de_données
 ```
 
 ## Utilisation
