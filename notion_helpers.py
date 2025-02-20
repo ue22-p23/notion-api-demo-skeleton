@@ -23,7 +23,7 @@ HEADERS = {
     "Notion-Version": "2022-06-28"
 }
 
-def list_tasks(task_id_list: list):
+def list_tasks(global_task_ids: set[str]):
     """
     Retrieves and prints information about tasks from the Notion database.
 
@@ -46,6 +46,7 @@ def list_tasks(task_id_list: list):
         # add the code to spot the task status
         task_status = None
         print(f"ID: {task_id} | Name: {task_name} | Status: {task_status}")
+        global_task_ids.add(task_id)
 
 def get_task_content(page_id: str):
     """

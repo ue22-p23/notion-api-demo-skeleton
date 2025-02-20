@@ -33,10 +33,11 @@ def main():
         None
     """
 
+    # as we deal with globally unique IDs, it's crucial to have autocompletion
     task_completer = WordCompleter(["list", "details", "update", "add_text", "exit"])
     status_completer = WordCompleter(["Not Started", "In Progress", "Completed"])
     task_id_completer = None
-    task_id_list = []
+    global_task_ids = set()
 
     # first process verbs on the command line if any
     # so you can call e.g.
@@ -52,8 +53,8 @@ def main():
         else:
             user_input = prompt("Action: ", completer=task_completer)
         if user_input == "list":
-            list_tasks(task_id_list)
-            task_id_completer = WordCompleter(task_id_list)
+            list_tasks(global_task_ids)
+            task_id_completer = WordCompleter(global_task_ids)
         elif user_input == "details":
             task_id = prompt("Enter task ID: ", completer=task_id_completer)
             get_task_details(task_id)
