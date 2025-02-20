@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 
 from prompt_toolkit import prompt
@@ -8,6 +10,7 @@ from notion_helpers import (
     get_task_details,
     update_task_status,
     add_text_to_task_body,
+    list_databases,
 )
 
 
@@ -62,6 +65,8 @@ def main():
             page_id = prompt("Enter page ID: ", completer=task_id_completer)
             text = prompt("Enter text to add: ")
             add_text_to_task_body(page_id, text)
+        elif user_input == "bases":
+            list_databases()
             break
         elif user_input == "exit":
             break

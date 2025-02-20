@@ -159,3 +159,28 @@ def add_text_to_task_body(page_id: str, text: str):
     else:
         print(f"Failed to add text to the page. Error: {response.json()}")
         print(response.json())
+
+
+def list_databases():
+    """
+    useful for troubleshooting
+    this function lists all the databases in the workspace
+    so it allows you to check that:
+    - you have the right API token
+    - you have properly attached the integration to the database
+    - you have the right database ID
+
+    NOTE: that in the output the db id may contain additional dashes
+    you can ignore those
+
+    this means that a database for example a database that you see as
+    https://www.notion.so/1a07d56aecd980c59480ebe062413026?v=1a07d56aecd981de9efb000c0a92979f
+        will show up here with
+    'id': '1a07d56a-ecd9-80c5-9480-ebe062413026',
+
+    you can use either form as the database ID
+    """
+    url = "https://api.notion.com/v1/search"
+    response = requests.post(url, headers=HEADERS)
+    print(response.status_code)
+    pprint(response.json())
