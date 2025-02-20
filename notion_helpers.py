@@ -45,17 +45,22 @@ def list_tasks(global_task_ids: set[str]):
     """
     ## xxx add code to define the URL to fetch tasks from the Notion API
     url = f"https://api.notion.com/v1/......"
+    url = f"https://api.notion.com/v1/databases/{NOTION_DATABASE_ID}/query"
     response = requests.post(url, headers=HEADERS)
     # print(F"{response.status_code=}")
     tasks = response.json().get("results", [])
     for task in tasks:
         # pprint(task)
+        properties = task.get("properties", {})
         # xxx add code to find the row's unique ID
         task_id = None
+        task_id = task.get("id")
         # xxx add code to spot the task name
         task_name = None
+        task_name = properties["Name"]["title"][0]["plain_text"]
         # xxx add code to spot the task status
         task_status = None
+        properties["Status"]["status"]["name"]
         print(f"ID: {task_id} | Name: {task_name} | Status: {task_status}")
         global_task_ids.add(task_id)
 
@@ -72,16 +77,21 @@ def get_task_details(task_id):
     """
     # xxx add code to define the URL to fetch task details from the Notion API
     url = f"https://api.notion.com/v1/....."
+    url = f"https://api.notion.com/v1/pages/{task_id}"
     response = requests.get(url, headers=HEADERS)
     task = response.json()
 
     # pprint(task)
+    properties = task.get("properties", {})
     ## xxx add code to get the task name
     task_name = None
+    task_name = task_name = properties["Name"]["title"][0]["plain_text"]
     ## xxx add code to get the task status
     task_status = None
+    task_status = properties["Status"]["status"]["name"]
     ## xxx add code to get the task creation date
     task_creation_date = None
+    task_creation_date = task["created_time"]
 
     print(
         f"Name: {task_name}\nStatus: {task_status}\nCreation Date: {task_creation_date}"
@@ -104,6 +114,7 @@ def get_task_content(page_id: str):
 
     """
     url = f"https://api.notion.com/v1/....."
+    url = f"https://api.notion.com/v1/blocks/{page_id}/children"
     response = requests.get(url, headers=HEADERS)
     blocks = response.json().get("results", [])
 
@@ -114,6 +125,8 @@ def get_task_content(page_id: str):
             case "paragraph":
                 ## xxx add code to get the text content of the paragraph block
                 text_content = ""
+                for chunk in block['paragraph']['rich_text']:
+                    text_content += chunk['plain_text'] + " "
                 content += text_content + "\n\n"
             case "heading_1" | "heading_2" | "heading_3":
                 ## xxx add code to get the text content of the heading block
@@ -122,17 +135,22 @@ def get_task_content(page_id: str):
                     case "heading_1":
                         ## xxx add code to format the heading as a level 1 heading
                         content += ""
+                        content += "# " + block['heading_1']['rich_text'][0]['plain_text'] + "\n"
                     case "heading_2":
                         ## xxx add code to format the heading as a level 2 heading
                         content += ""
+                        content += "## " + block['heading_2']['rich_text'][0]['plain_text'] + "\n"
                     case "heading_3":
                         ## xxx add code to format the heading as a level 3 heading
                         content += ""
+                        content += "### " + block['heading_3']['rich_text'][0]['plain_text'] + "\n"
             case "bulleted_list_item":
                 ## xxx add code to get the text content of the bulleted list item block
                 text_content = ""
+                text_content = block['bulleted_list_item']['rich_text'][0]['plain_text']
                 ## xxx add code to format the bulleted list item
                 content += ""
+                content += f"* {text_content}\n"
             # xxx add code here for handling other block types like links, etc.
 
     md = Markdown(content)
@@ -155,9 +173,19 @@ def update_task_status(task_id: str, new_status: str):
     """
     ## xxx add code: the URL to update the task status
     url = f"https://api.notion.com/v1/....."
+    url = f"https://api.notion.com/v1/pages/{task_id}"
 
     ## xxx add code: the data to update the task status
     data = {}
+    data = {
+        "properties": {
+            "Status": {
+                "status": {
+                    "name": new_status
+                }
+            }
+        }
+    }
 
     response = requests.patch(url, json=data, headers=HEADERS)
     if response.status_code == 200:
@@ -183,10 +211,27 @@ def add_text_to_task_body(page_id: str, text: str):
     """
     ## xxx add code: the URL to add text to the task body
     url = f"https://api.notion.com/v1/....."
+    url = f"https://api.notion.com/v1/blocks/{page_id}/children"
 
     data = {
         ## xxx add code: the data to add text to the task body
-    }
+        "children": [
+            {
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [
+                        {
+                            "text": {
+                                "content": text,
+                                "link": None
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+}
 
     response = requests.patch(url, json=data, headers=HEADERS)
     if response.status_code == 200:
