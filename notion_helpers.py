@@ -1,15 +1,22 @@
+import os
+# use pprint to inspect the JSON response
+from pprint import pprint
+
 import requests
+# to load the .env file with our specifics
 import dotenv
-import os 
+# nicer output formatting
 from rich.console import Console
 from rich.markdown import Markdown
 
 console = Console()
-dotenv.load_dotenv()
 
+# load the .env file
+dotenv.load_dotenv()
 NOTION_TOKEN = os.getenv("NOTION_TOKEN")
 NOTION_DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
 
+# the HTTP headers that we need
 HEADERS = {
     "Authorization": f"Bearer {NOTION_TOKEN}",
     "Content-Type": "application/json",
@@ -26,19 +33,19 @@ def list_tasks(task_id_list: list):
     Returns:
         None
     """
-    url = f"https://api.notion.com/v1/......" ## Add the URL to fetch tasks from the Notion API
+    ## Add the URL to fetch tasks from the Notion API
+    url = f"https://api.notion.com/v1/......"
     response = requests.post(url, headers=HEADERS)
+    # print(F"{response.status_code=}")
     tasks = response.json().get("results", [])
-    keep_ids = False
-    if not task_id_list:
-        keep_ids = True
     for task in tasks:
-        task_id = None    ## Add code to get the task ID
-        task_name = None  ## Add code to get the task name
-        task_status = None ## Add code to get the task status
+        # add the code to find the row's unique ID
+        task_id = None
+        # add the code to spot the task name
+        task_name = None
+        # add the code to spot the task status
+        task_status = None
         print(f"ID: {task_id} | Name: {task_name} | Status: {task_status}")
-        if keep_ids:
-            task_id_list.append(task_id)
 
 def get_task_content(page_id: str):
     """
@@ -57,7 +64,7 @@ def get_task_content(page_id: str):
     url = f"https://api.notion.com/v1/....."
     response = requests.get(url, headers=HEADERS)
     blocks = response.json().get("results", [])
-    
+
     content = ""
     for block in blocks:
         if block['type'] == 'paragraph':
@@ -92,11 +99,11 @@ def get_task_details(task_id):
     url = f"https://api.notion.com/v1/....." # Add the URL to fetch task details from the Notion API
     response = requests.get(url, headers=HEADERS)
     task = response.json()
-    
+
     task_name = None ## Add code to get the task name
     task_status = None ## Add code to get the task status
     task_creation_date = None ## Add code to get the task creation date
-    
+
     print(f"Name: {task_name}\nStatus: {task_status}\nCreation Date: {task_creation_date}")
     get_task_content(task_id)
 
@@ -116,10 +123,10 @@ def update_task_status(task_id: str, new_status: str):
         None
     """
     url = f"https://api.notion.com/v1/....." ## Add the URL to update the task status
-    
+
     data = {
     } ## Add the data to update the task status
-    
+
     response = requests.patch(url, json=data, headers=HEADERS)
     if response.status_code == 200:
         print("Task status updated successfully.")
@@ -141,11 +148,11 @@ def add_text_to_task_body(page_id: str, text: str):
         None
     """
     url = f"https://api.notion.com/v1/blocks/{page_id}/children"
-    
+
     data = {
-        ## Add the data to add text to the task body    
+        ## Add the data to add text to the task body
     }
-    
+
     response = requests.patch(url, json=data, headers=HEADERS)
     if response.status_code == 200:
         print("Text added successfully to the page.")
